@@ -220,4 +220,4 @@ $$
 
 2. [生成扩散模型漫谈（二）：DDPM = 自回归式VAE](https://kexue.fm/archives/9152)
 
-3.
+3. [生成扩散模型漫谈（三）：DDPM = 贝叶斯 + 去噪](https://kexue.fm/archives/9164)
