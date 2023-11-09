@@ -1,0 +1,431 @@
+<!DOCTYPE html><html lang="zh" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>DMs Sampler之Classifier Guidance | TtuHamg的技术专栏</title><meta name="author" content="Jiahang Tu"><meta name="copyright" content="Jiahang Tu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文是Diffusion Model中Classifier Guidance采样方法学习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DMs Sampler之Classifier Guidance">
+<meta property="og:url" content="http://example.com/2023/10/20/Classifier-Guidance/index.html">
+<meta property="og:site_name" content="TtuHamg的技术专栏">
+<meta property="og:description" content="本文是Diffusion Model中Classifier Guidance采样方法学习。">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/avater.png">
+<meta property="article:published_time" content="2023-10-19T16:13:50.000Z">
+<meta property="article:modified_time" content="2023-10-20T17:13:50.000Z">
+<meta property="article:author" content="Jiahang Tu">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avater.png"><link rel="shortcut icon" href="/img/avater.png"><link rel="canonical" href="http://example.com/2023/10/20/Classifier-Guidance/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DMs Sampler之Classifier Guidance',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-10-21 01:13:50'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avater.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://api.dujin.org/bing/1920.php')"><nav id="nav"><span id="blog-info"><a href="/" title="TtuHamg的技术专栏"><span class="site-name">TtuHamg的技术专栏</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DMs Sampler之Classifier Guidance</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">Created</span><time datetime="2023-10-19T16:13:50.000Z" title="Created 2023-10-20 00:13:50">2023-10-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Diffusion-Models/">Diffusion Models</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="DMs Sampler之Classifier Guidance"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout hide-aside" id="content-inner"><div id="post"><article class="post-content" id="article-container"><span id="more"></span>
+<p>classifier guidance采样方法由Prafulla Dhariwal在《Diffusion Models
+Beat GANs on Image
+Synthesis》中提出，其核心在于<strong>使用分类器梯度信息指导模型以提高采样质量</strong>。</p>
+<p>我们希望训练好的DMs能够生成某一类别的图像。DDPM的做法是生成多张图像（1000张），其中存在50张该类别的图像。该方式存在效率太低问题。我们希望生成FID低（多样性高）的同时，同样能够可控生成。一种<strong>直觉</strong>的做法是使用<strong>条件引导(y)</strong>进行图像生成，即<span
+class="math inline">\(q(x_{t-1}|x_{t},y)\)</span>。</p>
+<p>在DDPM的推导中，我们用UNet模型求得后验概率<span
+class="math inline">\(q(x_{t-1}|x_{t})\)</span>对前向扩散的<span
+class="math inline">\(q(x_t|x_{t-1})\)</span>，实际上UNet模型是<strong>预测前向过程加的噪音</strong>。我们对<span
+class="math inline">\(q(x_{t-1}|x_{t})\)</span>加上条件y，即<span
+class="math inline">\(\hat
+q(x_{t-1}|x_{t},y)\)</span>，利用贝叶斯公式进行变换得到下式: <span
+class="math display">\[\hat q(x_{t-1}|x_t,y)=\frac{\hat
+q(x_{t-1}|x_t)\hat q(y|x_{t-1},x_{t} )}{\hat q(y|x_t)} \tag 1\]</span>
+公式（1）由<span class="math inline">\(\hat q(x_{t-1}|y)=\frac{\hat
+q(y|x_{t-1})\hat q(x_{t-1})}{\hat q(y)})\)</span>加上条件<span
+class="math inline">\(|x_t\)</span>得到。</p>
+<p>我们的目标需要给出公式（1）的显示表达。其中<strong>分母<span
+class="math inline">\(\hat q(y|x_{t})\)</span>在去噪过程中<span
+class="math inline">\(x_t\)</span>和<span
+class="math inline">\(y\)</span>均已知，因此是个常量</strong>。</p>
+<p>此外，我们需要有/假设一些其他的已知条件：<span
+class="math inline">\(\hat
+q(x_{t-1}|x_t,y)\)</span>的扩散过程和DDPM的正向过程保持一致，如下公式（2）。这样做的好处是能够用以训练好的DDPM模型，如同DDIM的思想，同时也是为了后续更好的推导。我们同样保持前向过程的Markov性质，如下公式4。
+<span class="math display">\[\hat q(x_t|x_{t-1},y)=q(x_t|x_{t-1}) \tag
+2\]</span> <span class="math display">\[\hat q(x_0)=q(x_0) \tag
+3\]</span> <span class="math display">\[\hat
+q(x_{1:T}|x_0,y)=\prod_{t=1}^{T}\hat q(x_t|x_{t-1},y) \tag
+4\]</span></p>
+<p>对于分子的第一项<span class="math inline">\(\hat
+q(x_{t-1}|x_t)\)</span>进行贝叶斯公式变换得到下式，请注意<span
+class="math inline">\(\hat q(x_{t}|x_{t-1})\)</span>和<span
+class="math inline">\(\hat q(x_{t}|x_{t-1},y)\)</span>不一样。 <span
+class="math display">\[\hat q(x_{t-1}|x_t)=\frac{\hat
+q(x_{t}|x_{t-1})\hat q(x_{t-1})}{\hat q(x_{t})} \tag 5\]</span>
+对于公式（5）分子第一项<span class="math inline">\(\hat
+q(x_t|x_{t-1})\)</span>，我们通过全概率公式引入条件y，使得能够利用的已知条件（2），其过程如下
+<span class="math display">\[
+\begin{aligned}
+\hat q(x_t|x_{t-1}) = &amp; \int_y \hat q(x_t,y|x_{t-1})dy \qquad \qquad
+\qquad &amp;写出条件概率，再加|x_{t-1}\\
+                    = &amp; \int_y \hat q(x_t|y,x_{t-1})\hat
+q(y|x_{t-1})dy &amp;利用公式（2）\\
+                    = &amp; \int_y q(x_t|x_{t-1})\hat q(y|x_{t-1})dy \\
+                    = &amp; q(x_t|x_{t-1})\int_y \hat q(y|x_{t-1})dy
+&amp;积分为1\\
+                    = &amp; q(x_t|x_{t-1})
+\end{aligned}
+\]</span> <span class="math display">\[\Rightarrow \hat
+q(x_t|x_{t-1})=q(x_t|x_{t-1}) \tag 6\]</span></p>
+<p>对于公式（5）分子第二项<span class="math inline">\(\hat
+q(x_{t-1})\)</span>和分母第二项<span class="math inline">\(\hat
+q(x_{t})\)</span>，求解过程如下: <span class="math display">\[
+\begin{aligned}
+\hat q(x_t) = &amp; \int_{x_{0:t-1}} \hat q(x_{0:t})dx_{0:t-1} \\
+            = &amp; \int_{x_{0:t-1}} \hat q(x_0)\hat
+q(x_{1:t}|x_0)dx_{0:t-1} \qquad \qquad  &amp;利用公式（3）\\
+            = &amp; \int_{x_{0:t-1}} q(x_0)\hat q(x_{1:t}|x_0)dx_{0:t-1}
+\end{aligned}
+\]</span></p>
+<p>对于<span class="math inline">\(\hat
+q(x_{1:t}|x_0)\)</span>，同样通过引入全概率公式引入条件y，使用能够利用的已知条件（2）求解：
+<span class="math display">\[
+\begin{aligned}
+\hat q(x_{1:t}|x_0) = &amp; \int_y \hat q(x_{1:t},y|x_0)dy \qquad \qquad
+\qquad &amp;写出条件概率，再加|x_{0}\\
+                    = &amp; \int_y \hat q(x_{1:t}|y,x_0)\hat q(y|x_0)dy
+&amp;利用公式（4）\\
+                    = &amp; \int_y \prod_1^t\hat q(x_t|y,x_{t-1})\hat
+q(y|x_0)dy &amp;利用公式（2）\\
+                    = &amp; \int_y \prod_1^tq(x_t|x_{t-1})\hat
+q(y|x_0)dy \\
+                    = &amp; \prod_1^tq(x_t|x_{t-1})\int_y \hat
+q(y|x_0)dy &amp;积分为1 \\
+                    = &amp; \prod_1^tq(x_t|x_{t-1}) \\
+                    = &amp; q(x_{1:t}|x_0)
+\end{aligned}
+\]</span> <span class="math display">\[\Rightarrow \hat q(x_{1:t}|x_0) =
+q(x_{1:t}|x_0) \tag 7\]</span> 将公式（7）带入<span
+class="math inline">\(\hat q(x_t)\)</span>的推导中继续推导： <span
+class="math display">\[
+\begin{aligned}
+\hat q(x_t) = &amp; \int_{x_{0:t-1}} q(x_0)\hat q(x_{1:t}|x_0)dx_{0:t-1}
+\\
+            = &amp; \int_{x_{0:t-1}} q(x_0)q(x_{1:t}|x_0)dx_{0:t-1}
+\quad \quad  利用公式（7）\\
+            = &amp; \int_{x_{0:t-1}} q(x_{0:t})dx_{0:t-1}\\
+            = &amp; q(x_t)
+\end{aligned}
+\]</span> <span class="math display">\[\Rightarrow \hat q(x_t)=q(x_t)
+\tag 8\]</span></p>
+<p>现在我们可以利用公式（6）和公式（8）带入求解公式（5)： <span
+class="math display">\[
+\begin{aligned}
+\hat q(x_{t-1}|x_t) = &amp; \frac{\hat q(x_{t}|x_{t-1})\hat
+q(x_{t-1})}{\hat q(x_{t})} \\
+                    = &amp; \frac{ q(x_{t}|x_{t-1}) q(x_{t-1})}{
+q(x_{t})}
+\end{aligned}
+\]</span> <span class="math display">\[\Rightarrow \hat q(x_{t-1}|x_t) =
+\frac{ q(x_{t}|x_{t-1}) q(x_{t-1})}{ q(x_{t})} \tag 9 \]</span></p>
+<p>对于公式（1）的第二项<span class="math inline">\(\hat
+q(y|x_{t-1},x_{t})\)</span>，使用贝叶斯公式，再加<span
+class="math inline">\(|x_{t-1}\)</span>，求解如下： <span
+class="math display">\[
+\begin{aligned}
+\hat q(y|x_{t-1},x_{t}) = &amp; \frac{\hat q(x_{t}|y,x_{t-1})\hat
+q(y|x_{t-1})}{\hat q(x_t|x_{t-1})} \quad \quad 利用公式（2）（6）\\
+                        = &amp; q(x_t|x_{t-1}) \frac{\hat
+q(y|x_{t-1})}{q(x_t|x_{t-1})} \\
+                        = &amp; \hat q(y|x_{t-1})
+\end{aligned}
+\]</span> <span class="math display">\[\Rightarrow\hat
+q(y|x_{t-1},x_{t}) = \hat q(y|x_{t-1}) \tag {10}\]</span>
+观察是公式（10）可以发现，是<strong>对<span
+class="math inline">\(x_{t-1}\)</span>的分类结果</strong>。</p>
+<p>结合公式（6）和公式（10），我们现在可以写出公式（1）的显示表达式：
+<span class="math display">\[
+\hat q(x_{t-1}|x_t,y)=\mathbb{Z}
+\space q(x_{t-1}|x_{t}) q(y|x_{t-1}) \tag {11}
+\]</span> 其中<span
+class="math inline">\(\mathbb{Z}\)</span>为归一化因子，确保概率积分为1。观察公式（11），我们可以发现，<strong>可以通过分类器的梯度信息指导模型生成某一类别的图像</strong>，其中分类器是与DDPM用同一数据集训练好的。因此，我们可以用训练好的DDPM模型<span
+class="math inline">\(P_\theta
+(x_{t-1}|x_t)\)</span>和提前训练的分类器模型<span
+class="math inline">\(P_\psi(y|x_{t-1})\)</span>进行去。唯一的问题在于，在t时刻的去噪过程中，我们已知y和<span
+class="math inline">\(x_{t}\)</span>，但是<span
+class="math inline">\(q(y|x_{t-1})\)</span>的<strong>条件是<span
+class="math inline">\(x_{t-1}\)</span></strong>。接下来我们需要解决该问题。</p>
+<p>在DDPM中，<span class="math inline">\(P_\theta(x_{t-1}|x_t)\sim
+\mathcal{N}(\mu(x_t,t),\Sigma(x_t,t))\)</span>。我们对公式（11）取log，第一项为：
+<span
+class="math display">\[logP_\theta(x_{t-1}|x_{t})=-\frac{1}{2}(x_{t-1}-\mu)^T\Sigma^{-1}(x_{t-1}-\mu)+C_1
+\tag{12}\]</span></p>
+<p>在DDPM中，我们假设方差<span
+class="math inline">\(\Sigma\)</span>很小，其概率分布呈现尖峰状，大部分会落在<span
+class="math inline">\(\mu\)</span>附近。我们考虑在<span
+class="math inline">\(\mu\)</span>进行<strong>一阶Tayler展开</strong>：
+<span class="math display">\[
+logP_\psi(y|x_{t-1})=
+logP_\psi(y|x_{t-1})|_{x_{t-1}=\mu}+(x_{t-1}-\mu)\nabla_{x_{t-1}}logP_\psi(y|x_{t-1})|_{x_{t-1}=\mu}+C_2
+\]</span> 上述公式中，<span
+class="math inline">\(C_2\)</span>代表其余高阶小量，第一项为由于指定了<span
+class="math inline">\(x_{t-1}=\mu\)</span>，因此为常数，将其写入<span
+class="math inline">\(C_2\)</span>中，同时为了方便观察，我们将<span
+class="math inline">\(\nabla_{x_{t-1}}logP_\psi(y|x_{t-1})|_{x_{t-1}=\mu}\)</span>用<span
+class="math inline">\(g\)</span>表示。<strong>值得注意的是，<span
+class="math inline">\(g\)</span>是一个常数，跟<span
+class="math inline">\(x_{t-1}\)</span>无关</strong>。于是，可以得到：
+<span class="math display">\[
+logP_\psi(y|x_{t-1})= (x_{t-1}-\mu)g+C_2 \tag {13}
+\]</span> 将公式（13）（12）带入公式（11）中，可以得到： <span
+class="math display">\[
+\begin{aligned}
+log\hat q(x_{t-1}|x_t,y) = &amp;
+-\frac{1}{2}(x_{t-1}-\mu)^T\Sigma^{-1}(x_{t-1}-\mu) + (x_{t-1}-\mu)g+C_3
+\\
+                         = &amp; -\frac{1}{2}(x_{t-1}-\mu-\Sigma
+g)^T\Sigma^{-1}(x_{t-1}-\mu-\Sigma g)+\frac{1}{2}g^T\Sigma g+C_3 \\
+\end{aligned}
+\]</span> <span
+class="math display">\[(验证(只关注g):-\frac{1}{2}(-x_{t-1}^T\Sigma^{-1}\Sigma
+g+\mu^T\Sigma^{-1}\Sigma
+g-g^T\Sigma^T\Sigma^{-1}x_{t-1}+g^T\Sigma^T\Sigma^{-1}\mu+g^T\Sigma^T\Sigma^{-1}\Sigma
+g))+\frac{1}{2}g^T\Sigma g\]</span> 由于<span
+class="math inline">\(g^T\Sigma g\)</span>不含有<span
+class="math inline">\(x_{t-1}\)</span>，因此该项为常数，可以得到： <span
+class="math display">\[
+log\hat q(x_{t-1}|x_t,y) = -\frac{1}{2}(x_{t-1}-\mu-\Sigma
+g)^T\Sigma^{-1}(x_{t-1}-\mu-\Sigma g)+C_4 \\
+\]</span> <span class="math display">\[log\hat q(x_{t-1}|x_t,y) = \sim
+\mathcal{N}(\mu+\Sigma g,\Sigma) \]</span> <span
+class="math display">\[x_{t-1}=\mu+\Sigma g+\Sigma \epsilon
+\tag{14}\]</span>
+由公式（14）可以看到，<strong>分类器梯度引入了去噪过程中</strong>。</p>
+<blockquote>
+<p>接下来部分，笔者理解不深，仅简单写下。(下面公式中是从t+1时刻预测t时刻的噪声，需要区别上文中t时刻预测t-1时刻噪声)</p>
+</blockquote>
+<p>上述过程完成了使用DDPM方法训练得到的模型用classifier
+guidance方法进行采样。但是DDIM方法训练得到的模型中，<span
+class="math inline">\(\Sigma\)</span>为0，在公司（14）中无法引入梯度信息。<strong>作者从score角度出发</strong>，给出DDIM方法训练得到的模型用classifier
+guidance方法进行采样。</p>
+<p>在DDPM中，我们有： <span class="math display">\[
+\begin{aligned}
+P(x_t|x_0) &amp; \sim
+\mathcal{N}(\sqrt{\bar{\alpha_t}}x_0,(1-\bar{\alpha_t})I) \\
+logP(x_t|x_0) &amp; = -\frac{1}{2}\frac{(x_t-\sqrt{\bar{\alpha_t}}x_0)^2
+}{1-\bar{\alpha_t}} \\
+\nabla_{x_t}logP(x_t|x_0) &amp; =
+-\frac{x_t-\sqrt{\bar{\alpha_t}}}{1-\bar{\alpha_t}} \\
+又有：x_t &amp; =
+\sqrt{\bar{\alpha_t}}x_0+(1-\sqrt{\bar{\alpha_t}})\epsilon \\
+\nabla_{x_t}logP(x_t|x_0) &amp; =
+-\frac{\epsilon}{\sqrt{1-\bar{\alpha_t}}} \\
+\end{aligned}
+\]</span> 所以，模型建模对象为 <span class="math display">\[
+\nabla_{x_t}logP_\theta(x_t) =
+-\frac{\epsilon_\theta}{\sqrt{1-\bar{\alpha_t}}} \tag{15}
+\]</span> 对于Classifer Guidance，我们有： <span class="math display">\[
+\begin{aligned}
+\nabla_{x_t}logP_\theta(x_t)P_\psi(y|x_t) = &amp;
+\nabla_{x_t}logP_\theta(x_t)+ \nabla_{x_t}logP_\psi(y|x_t) \\
+-\frac{\hat \epsilon_\theta(x_t)}{\sqrt{1-\bar{\alpha_t}}} = &amp;
+-\frac{\epsilon_\theta(x_t)}{\sqrt{1-\bar{\alpha_t}}}+\nabla_{x_t}logP_\psi(y|x_t)
+\\
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\hat \epsilon_\theta(x_t) =
+\epsilon_\theta(x_t)-\sqrt{1-\bar{\alpha_t}}\nabla_{x_t}logP_\psi(y|x_t)
+\tag{16} \\
+\]</span></p>
+<p>公式（16）中，等式左边为classifier
+guidance预测的noise，等式右边第一项为DDIM预测的noise，第二项不再像DDPM
+classifier guidance中用<span
+class="math inline">\(\Sigma\)</span>，而是用<span
+class="math inline">\(\sqrt{1-\bar{\alpha_t}}\)</span>表示。</p>
+<p>在<a
+target="_blank" rel="noopener" href="https://github.com/openai/guided-diffusion">代码实现</a>中，分类器梯度指导如下：指定生成图像类别，计算损失函数并反向传播到x_in</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">cond_fn</span>(<span class="params">x, t, y=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="keyword">assert</span> y <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">with</span> th.enable_grad():</span><br><span class="line">        x_in = x.detach().requires_grad_(<span class="literal">True</span>)</span><br><span class="line">        logits = classifier(x_in, t)</span><br><span class="line">        log_probs = F.log_softmax(logits, dim=-<span class="number">1</span>)</span><br><span class="line">        selected = log_probs[<span class="built_in">range</span>(<span class="built_in">len</span>(logits)), y.view(-<span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">return</span> th.autograd.grad(selected.<span class="built_in">sum</span>(), x_in)[<span class="number">0</span>] * args.classifier_scale</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">eps = eps - (<span class="number">1</span> - alpha_bar).sqrt() * cond_fn(</span><br><span class="line">    x, self._scale_timesteps(t), **model_kwargs</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">Jiahang Tu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2023/10/20/Classifier-Guidance/">http://example.com/2023/10/20/Classifier-Guidance/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/avater.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2023/10/23/DDPM/" title="DMs Sampler之DDPM"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">DMs Sampler之DDPM</div></div></a></div></nav></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Jiahang Tu</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
