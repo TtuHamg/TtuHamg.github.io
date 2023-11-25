@@ -433,6 +433,18 @@ ln(q(x|z))}_{生成过程} + \underbrace{\mathbb{E}_{z \sim
 p(z|x)}KL(p(z|x)|q(z))}_{编码过程}\right] \notag \\
 \end{align}
 \]</span></p>
+<blockquote>
+<p>上式中第一项可以这么理解：它是在得到采样一个<span
+class="math inline">\(p(z_1|x_1)\)</span>求<span
+class="math inline">\(ln(q(\hat
+x|z_1))\)</span>的期望，实际上是为了让<span class="math inline">\(\hat
+x\)</span>与<span
+class="math inline">\(x_1\)</span>接近，在代码层面是求<span
+class="math inline">\(x_1\)</span>与<span class="math inline">\(\hat
+x\)</span>的mse损失，在公式层面是让<span class="math inline">\(q(\hat
+x|z_1)\)</span>接近于1（更确定是<span
+class="math inline">\(x_1\)</span>），那么-log就会最小，是损失函数的优化目标。</p>
+</blockquote>
 <p>对于扩散模型，可以当成多层VAE模型，可以直接写出其优化目标： <span
 class="math display">\[
 \begin{align}
