@@ -30,3 +30,11 @@ git clone项目超时
 ```git
 git clone https://gitclone.com/github.com/facebookresearch/DiTgit  
 ```
+
+#### Tmux
+```python
+tmux attach -t <name> #进入name窗口
+tmux new -s <name> #创建name窗口
+ctrl + D #exit/kill当前窗口
+ctrl + B, :, set -g mouse on #开启鼠标模式
+```
