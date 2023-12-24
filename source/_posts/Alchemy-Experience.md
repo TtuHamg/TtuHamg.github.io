@@ -17,8 +17,24 @@ description: 在闲暇之际，记录炼丹经验。
 | TF32 Tensor Core(TFLOPS) | 156               |156 |83       | 35       | 13.4       |
 | 参考报价                  |108000        |87000 |12999    | 11999    |              
 Notes:
+
 1. TFLOPS（Floating-point operations per second）：每秒万亿次浮点运算。
+
 2. BF16与FP16区别：前者用8bit 表示指数，7bit 表示小数；后者用5bit 表示指数，10bit 表示小数。
+
 3. 不论CNN还是Transformer，绝大多数的浮点计算量都集中在矩阵乘法上面，而这部分的负载恰好能用 tensor core 运行。因此，尽管看上去3090的FP32 cuda core比A100大，但tensor core上A100远超于3090。
+
 4. PCIe（peripheral component interconnect express）版指显卡插在主板的PCIe卡槽上，而SXM版是英伟达公司设计出来的，它的出现主要是为高性能计算和数据中心提高更强的计算能力和传输速度。SXM规格的一般用在英伟达的DGX服务器中，通过主板上集成的NVSwitch实现NVLink的连接，不需要通过主板上的PCIe进行通信，**其传输、通信速率快于PCIe版，在算力方面SXM版本是PCIe版本两倍**。
+
 5. A800相比于A100，主要是将NVLink的传输速率由A100的600GB/s降至了400GB/s，其他参数与A100基本一致。这样做是为了遵守美国限制规则（限制出口芯片的I/O带宽传输速率大于或等于600 Gbyte/s）。
+
+## 模型
+对于大模型本身，从零训练一个生成模型是一件非常费卡的事情。根据hugging face社区给出的Stable Diffusion的训练条件，对于高校而言，实在是望尘莫及。
+
+### Stable Diffusion
+
+#### v1版本
+
+根据Compvis提供的训练细节，v1版本分为了v1.1-v1.5五个迭代版本。
+
+- v1.1在laion2B-en数据集上以256\*256分辨率训练237,000 steps，随后在laion-high-resolution数据集上以512\*512分辨率训练194,000 steps。前者是laion5B数据集的一个子集。laion5B数据集是从网页数据Common Crawl中筛选出来的图像-文本对数据集，它包含5.85B的图像-文本对，其中文本为英文的数据量为2.32B，这就是laion2B-en数据集。后者是从laion5B数据集中分辨率在1024*1024以上的170,000,000个文本对。
