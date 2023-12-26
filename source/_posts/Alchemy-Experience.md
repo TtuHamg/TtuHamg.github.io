@@ -35,6 +35,33 @@ Notes:
 
 #### v1版本
 
-根据Compvis提供的训练细节，v1版本分为了v1.1-v1.5五个迭代版本。
+根据Compvis提供的训练细节，v1版本分为了v1.1-v1.5五个迭代版本。硬件条件：32x8xA100 40G PCle。优化器：AdamW。梯度累加：2。Batch：32x8x2x4=2048。学习率：10000 steps warm up到0.0001，之后保持不变。v1训练了150000小时（24天）。
 
 - v1.1在laion2B-en数据集上以256\*256分辨率训练237,000 steps，随后在laion-high-resolution数据集上以512\*512分辨率训练194,000 steps。前者是laion5B数据集的一个子集。laion5B数据集是从网页数据Common Crawl中筛选出来的图像-文本对数据集，它包含5.85B的图像-文本对，其中文本为英文的数据量为2.32B，这就是laion2B-en数据集。后者是从laion5B数据集中分辨率在1024*1024以上的170,000,000个文本对。
+
+- 在v1.1的基础上，v1.2在laion-improved-aesthetics数据集上以512*512分辨率训练515,000 steps。该数据集为laion2B-en的子集，要求审美评分大于5，水印概率小于0.5。
+
+- 在v1.2的基础上，v1.3同样在laion-improved-aesthetics数据集训练195,000 steps，并对文本条件进行10% dropout以提升classifier-free guidance采样。
+
+- 在v1.2的基础上，v1.4在laion-aesthetics v2 5+数据集训练225,000 steps，并对文本条件进行10% dropout以提升classifier-free guidance采样。
+
+## 炼丹经验
+1. 如果服务器只有2080Ti，即使卡再多，也别妄想跑大模型。虽然batch_size或者显存的问题能够通过梯度累计（[Gradient Accumulations](https://github.com/openai/improved-diffusion/blob/main/improved_diffusion/train_util.py#L190)）或者多级多卡DDP训练解决。但是算力永远是过不去的坎。同样8卡相同batch_size训练[DiT-S/2](https://github.com/facebookresearch/DiT)，达到相同steps，2080Ti需要10天而A100只需要1天。
+
+2. 自己写模型代码时，对于需要两个矩阵相乘的情况，千万不要初始化为0，不然可能会造成梯度一直为0无法更新。
+
+3. 对于DDP多机多卡训练，pytorch推荐torch启动，而非torch.distributed.launch。
+```python
+# 指定服务器数量、每台服务器的显卡数量、当前服务器的编号、rank=0的服务器ip地址、指定端口号
+torchrun --nnodes=2 --nproc_per_node=4  --node_rank=0 --master_addr='10.214.241.20' --master_port=2345 
+
+dist.init_process_group("nccl")
+
+rank = dist.get_rank() # global rank
+device = rank % torch.cuda.device_count() #local rank
+torch.cuda.set_device(device)
+seed = args.global_seed * dist.get_world_size() + rank
+torch.manual_seed(seed)
+
+model = DDP(model.to(device), device_ids=[device])
+```

@@ -7,7 +7,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="http://example.com/img/avater.png">
 <meta property="article:published_time" content="2023-12-23T05:48:32.000Z">
-<meta property="article:modified_time" content="2023-12-24T13:53:47.520Z">
+<meta property="article:modified_time" content="2023-12-26T11:15:59.813Z">
 <meta property="article:author" content="Jiahang Tu">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/img/avater.png"><link rel="shortcut icon" href="/img/avater.png"><link rel="canonical" href="http://example.com/2023/12/23/Alchemy-Experience/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
@@ -55,7 +55,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2023-12-24 21:53:47'
+  postUpdate: '2023-12-26 19:15:59'
 }</script><script>(win=>{
       win.saveToLocal = {
         set: (key, value, ttl) => {
@@ -252,11 +252,32 @@ face社区给出的Stable
 Diffusion的训练条件，对于高校而言，实在是望尘莫及。</p>
 <h3 id="stable-diffusion">Stable Diffusion</h3>
 <h4 id="v1版本">v1版本</h4>
-<p>根据Compvis提供的训练细节，v1版本分为了v1.1-v1.5五个迭代版本。</p>
+<p>根据Compvis提供的训练细节，v1版本分为了v1.1-v1.5五个迭代版本。硬件条件：32x8xA100
+40G
+PCle。优化器：AdamW。梯度累加：2。Batch：32x8x2x4=2048。学习率：10000
+steps warm up到0.0001，之后保持不变。v1训练了150000小时（24天）。</p>
 <ul>
-<li>v1.1在laion2B-en数据集上以256*256分辨率训练237,000
+<li><p>v1.1在laion2B-en数据集上以256*256分辨率训练237,000
 steps，随后在laion-high-resolution数据集上以512*512分辨率训练194,000
 steps。前者是laion5B数据集的一个子集。laion5B数据集是从网页数据Common
-Crawl中筛选出来的图像-文本对数据集，它包含5.85B的图像-文本对，其中文本为英文的数据量为2.32B，这就是laion2B-en数据集。后者是从laion5B数据集中分辨率在1024*1024以上的170,000,000个文本对。</li>
+Crawl中筛选出来的图像-文本对数据集，它包含5.85B的图像-文本对，其中文本为英文的数据量为2.32B，这就是laion2B-en数据集。后者是从laion5B数据集中分辨率在1024*1024以上的170,000,000个文本对。</p></li>
+<li><p>在v1.1的基础上，v1.2在laion-improved-aesthetics数据集上以512*512分辨率训练515,000
+steps。该数据集为laion2B-en的子集，要求审美评分大于5，水印概率小于0.5。</p></li>
+<li><p>在v1.2的基础上，v1.3同样在laion-improved-aesthetics数据集训练195,000
+steps，并对文本条件进行10% dropout以提升classifier-free
+guidance采样。</p></li>
+<li><p>在v1.2的基础上，v1.4在laion-aesthetics v2 5+数据集训练225,000
+steps，并对文本条件进行10% dropout以提升classifier-free
+guidance采样。</p></li>
 </ul>
+<h2 id="炼丹经验">炼丹经验</h2>
+<ol type="1">
+<li><p>如果服务器只有2080Ti，即使卡再多，也别妄想跑大模型。虽然batch_size或者显存的问题能够通过梯度累计（<a
+target="_blank" rel="noopener" href="https://github.com/openai/improved-diffusion/blob/main/improved_diffusion/train_util.py#L190">Gradient
+Accumulations</a>）或者多级多卡DDP训练解决。但是算力永远是过不去的坎。同样8卡相同batch_size训练<a
+target="_blank" rel="noopener" href="https://github.com/facebookresearch/DiT">DiT-S/2</a>，达到相同steps，2080Ti需要10天而A100只需要1天。</p></li>
+<li><p>自己写模型代码时，对于需要两个矩阵相乘的情况，千万不要初始化为0，不然可能会造成梯度一直为0无法更新。</p></li>
+<li><p>对于DDP多机多卡训练，pytorch推荐torch启动，而非torch.distributed.launch。
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定服务器数量、每台服务器的显卡数量、当前服务器的编号、rank=0的服务器ip地址、指定端口号</span></span><br><span class="line">torchrun --nnodes=<span class="number">2</span> --nproc_per_node=<span class="number">4</span>  --node_rank=<span class="number">0</span> --master_addr=<span class="string">&#x27;10.214.241.20&#x27;</span> --master_port=<span class="number">2345</span> </span><br><span class="line"></span><br><span class="line">dist.init_process_group(<span class="string">&quot;nccl&quot;</span>)</span><br><span class="line"></span><br><span class="line">rank = dist.get_rank() <span class="comment"># global rank</span></span><br><span class="line">device = rank % torch.cuda.device_count() <span class="comment">#local rank</span></span><br><span class="line">torch.cuda.set_device(device)</span><br><span class="line">seed = args.global_seed * dist.get_world_size() + rank</span><br><span class="line">torch.manual_seed(seed)</span><br><span class="line"></span><br><span class="line">model = DDP(model.to(device), device_ids=[device])</span><br></pre></td></tr></table></figure></p></li>
+</ol>
 </article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">Jiahang Tu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2023/12/23/Alchemy-Experience/">http://example.com/2023/12/23/Alchemy-Experience/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/avater.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/11/25/DDIM/" title="DMs Sampler之DDIM"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">DMs Sampler之DDIM</div></div></a></div></nav></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Jiahang Tu</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
