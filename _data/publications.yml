@@ -1,22 +1,26 @@
 main:
+  - title: "CE-SDWV: Effective and Efficient Concept Erasure for Text-to-Image Diffusion Models via a Semantic-Driven Word Vocabulary"
+    authors: <strong>Jiahang Tu</strong>, Qian Feng, Chufan Chen, Jiahua Dong, Hanbin Zhao*, Chao Zhang, Hui Qian
+    conference_short: Arxiv
+    conference: <strong>ArXiv Preprint</strong>, 2025.
+    pdf: https://arxiv.org/pdf/2501.15562
+    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:T8Ki0NHoO3cJ:scholar.google.com/&output=citation&scisdr=ClGnhA8DEJGQ80qdxfI:AFWwaeYAAAAAZ_-b3fKNf3dUtbD8pjTCoxL68hw&scisig=AFWwaeYAAAAAZ_-b3cs0VEwA2HlOSdHv7gs-GGM&scisf=4&ct=citation&cd=-1&hl=zh-CN
+    image: ./assets/img/CE_SDWV.png
 
-  - title: Continual Learning for Abdominal Multi-Organ and Tumor Segmentation
-    authors: Yixiao Zhang, Xinyi Li, Huimiao Chen, Alan Yuille, <strong>Yaoyao Liu*</strong>, Zongwei Zhou* (*Corresponding authors)
-    conference_short: MICCAI
-    conference: International Conference on Medical Image Computing and Computer-Assisted Intervention <strong>(MICCAI)</strong>, 2023.
-    pdf: https://arxiv.org/pdf/2306.00988.pdf
-    code: https://github.com/MrGiovanni/ContinualLearning
-    bibtex: https://bib.yliu.me/MICCAI23.txt
-    image: ./assets/img/teaser_example_2.png
-    notes: Early Accept
+  - title: "TextToucher: Fine-Grained Text-to-Touch Generation"
+    authors: <strong>Jiahang Tu</strong>, Hao Fu, Fengyu Yang, Hanbin Zhao*, Chao Zhang, Hui Qian
+    conference_short: AAAI
+    conference: The Association for the Advancement of Artificial Intelligence <strong>(AAAI)</strong>, 2025.
+    pdf: https://arxiv.org/pdf/2409.05427
+    code: https://github.com/TtuHamg/TextToucher
+    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:_6MGxesMG7EJ:scholar.google.com/&output=citation&scisdr=ClGnhA8DEJGQ80qc5AU:AFWwaeYAAAAAZ_-a_AUhhUO9MDlHyhi4_Np4MYQ&scisig=AFWwaeYAAAAAZ_-a_KkwjMmi-qAS6EQWv8RoNgs&scisf=4&ct=citation&cd=-1&hl=zh-CN
+    image: ./assets/img/TextToucher.png
 
-  - title: "Mnemonics Training: Multi-Class Incremental Learning without Forgetting"
-    authors: <strong>Yaoyao Liu</strong>, Yuting Su, An-An Liu, Bernt Schiele, Qianru Sun
-    conference_short: CVPR
-    conference: IEEE/CVF Conference on Computer Vision and Pattern Recognition <strong>(CVPR)</strong>, 2020.
-    pdf: https://arxiv.org/pdf/2002.10211.pdf
-    code: https://github.com/yaoyao-liu/class-incremental-learning/tree/main/mnemonics-training
-    page: https://class-il.mpi-inf.mpg.de/mnemonics/
-    bibtex: https://class-il.mpi-inf.mpg.de/mnemonics/
-    notes: Oral Presentation
-    image: ./assets/img/teaser_example.png
+  - title: "DriveDiTFit: Fine-tuning Diffusion Transformers for Autonomous Driving Data Generation"
+    authors: <strong>Jiahang Tu</strong>, Wei Ji, Hanbin Zhao*, Chao Zhang, Roger Zimmermann, Hui Qian
+    conference_short: TOMM
+    conference: ACM Transactions on Multimedia Computing, Communications and Applications <strong>(TOMM)</strong>, 2025.
+    pdf: https://dl.acm.org/doi/10.1145/3712064
+    code: https://github.com/TtuHamg/DriveDiTFit
+    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:YGYZmOLW7vkJ:scholar.google.com/&output=citation&scisdr=ClGnhA8DEJGQ80qRzAk:AFWwaeYAAAAAZ_-X1AlBWxDhFtFZ1IvhQpcBfHY&scisig=AFWwaeYAAAAAZ_-X1JCKtSxlKRuKkU9RZBOCxEc&scisf=4&ct=citation&cd=-1&hl=zh-CN
+    image: ./assets/img/DriveDiTFit.jpg
