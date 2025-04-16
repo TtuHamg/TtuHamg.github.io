@@ -8,7 +8,7 @@ I am Jiahang Tu, a first-year Ph.D. student in the College of Computer Science a
 
 ## News
 
-- **[March. 2025]** Our paper about touch generation is accepted to AAAI 2025.
+- **[Mar. 2025]** Our paper about touch generation is accepted to AAAI 2025.
 - **[Feb. 2025]** Our paper about fine-tuning is accepted to TOMM 2025.
 
 {% include_relative _includes/publications.md %}
