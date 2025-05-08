@@ -16,5 +16,5 @@ I am Jiahang Tu, a first-year Ph.D. student in the College of Computer Science a
 <!-- {% include_relative _includes/services.md %} -->
 
 <center>
-<a href='https://clustrmaps.com/site/1c5jw'  title='Visit tracker'><img src='//www.clustrmaps.com/map_v2.png?d=axgQ3kq5HWL0F25FPW7tq3Qd0OVauR_jOGSYOHjaizo&cl=ffffff'/></a>
+<a href='https://clustrmaps.com/site/1c5jw'  title='Visit tracker'><img src='//clustrmaps.com/map_v2.png?cl=ffffff&w=300&t=n&d=KqKgtJwYxmYzi4RLxWRAJPwn1wbpJJPQNzALkOEZUSc&co=7ec0ef&ct=ffffff' /></a>
 </center>
