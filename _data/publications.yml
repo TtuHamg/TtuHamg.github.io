@@ -1,10 +1,26 @@
 main:
+  - title: "Mass Concept Erasure in Diffusion Models with Concept Hierarchy"
+    authors: <strong>Jiahang Tu</strong>, Ye Li, Yiming Wu, Hanbin Zhao*, Chao Zhang, Hui Qian
+    conference_short: AAAI
+    conference: The Association for the Advancement of Artificial Intelligence <strong>(AAAI)</strong>, 2026.
+    pdf: https://arxiv.org/abs/2601.03305
+    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:DNlaZyTjSkMJ:scholar.google.com/&output=citation&scisdr=Cn1R-jkLELbR26GttRM:AHkA5jQAAAAAaWmrrRNNqkyVFjYk-Ez-1HbiJ4o&scisig=AHkA5jQAAAAAaWmrrVc7un31AZyY3-g3Z-9UCJ4&scisf=4&ct=citation&cd=-1&hl=zh-CN
+    image: ./assets/img/CE_SDWV.png
+
+  - title: "FG-OrIU: Towards Better Forgetting via Feature-Gradient Orthogonality for Incremental Unlearning"
+    authors: Qian Feng, <strong>Jiahang Tu</strong>, Mintong Kang, Hanbin Zhao*, Chao Zhang, Hui Qian
+    conference_short: AAAI
+    conference: TProceedings of the IEEE/CVF International Conference on Computer Vision <strong>(ICCV)</strong>, 2025.
+    pdf: https://openaccess.thecvf.com/content/ICCV2025/papers/Feng_FG-OrIU_Towards_Better_Forgetting_via_Feature-Gradient_Orthogonality_for_Incremental_Unlearning_ICCV_2025_paper.pdf
+    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:8SQJwC8sgK8J:scholar.google.com/&output=citation&scisdr=Cn1R-jkLELbR26GqwKA:AHkA5jQAAAAAaWms2KA_LC3cCcxOL75n4m7_HB8&scisig=AHkA5jQAAAAAaWms2J0eM748uyuEuzjXyeDbJPA&scisf=4&ct=citation&cd=-1&hl=zh-CN
+    image: ./assets/img/FG_OrIU.png
+
   - title: "CE-SDWV: Effective and Efficient Concept Erasure for Text-to-Image Diffusion Models via a Semantic-Driven Word Vocabulary"
     authors: <strong>Jiahang Tu</strong>, Qian Feng, Chufan Chen, Jiahua Dong, Hanbin Zhao*, Chao Zhang, Hui Qian
     conference_short: Arxiv
     conference: <strong>ArXiv Preprint</strong>, 2025.
     pdf: https://arxiv.org/pdf/2501.15562
-    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:T8Ki0NHoO3cJ:scholar.google.com/&output=citation&scisdr=ClGnhA8DEJGQ80qdxfI:AFWwaeYAAAAAZ_-b3fKNf3dUtbD8pjTCoxL68hw&scisig=AFWwaeYAAAAAZ_-b3cs0VEwA2HlOSdHv7gs-GGM&scisf=4&ct=citation&cd=-1&hl=zh-CN
+    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:T8Ki0NHoO3cJ:scholar.google.com/&output=citation&scisdr=Cn1R-jkLELbR26Gt9uM:AHkA5jQAAAAAaWmr7uNg5wYWyrdPFgrMGDgbcAA&scisig=AHkA5jQAAAAAaWmr7g6GmG04P-5ghDluhks3kr0&scisf=4&ct=citation&cd=-1&hl=zh-CN
     image: ./assets/img/CE_SDWV.png
 
   - title: "TextToucher: Fine-Grained Text-to-Touch Generation"
@@ -13,7 +29,7 @@ main:
     conference: The Association for the Advancement of Artificial Intelligence <strong>(AAAI)</strong>, 2025.
     pdf: https://arxiv.org/pdf/2409.05427
     code: https://github.com/TtuHamg/TextToucher
-    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:_6MGxesMG7EJ:scholar.google.com/&output=citation&scisdr=ClGnhA8DEJGQ80qc5AU:AFWwaeYAAAAAZ_-a_AUhhUO9MDlHyhi4_Np4MYQ&scisig=AFWwaeYAAAAAZ_-a_KkwjMmi-qAS6EQWv8RoNgs&scisf=4&ct=citation&cd=-1&hl=zh-CN
+    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:fauXxHS0KjwJ:scholar.google.com/&output=citation&scisdr=Cn1R-jkLELbR26GtxGs:AHkA5jQAAAAAaWmr3Gtp07sKSAnMyvLC8WEtzcs&scisig=AHkA5jQAAAAAaWmr3AZLoo_IQltxNSIlQX5YsQ0&scisf=4&ct=citation&cd=-1&hl=zh-CN
     image: ./assets/img/TextToucher.png
 
   - title: "DriveDiTFit: Fine-tuning Diffusion Transformers for Autonomous Driving Data Generation"
@@ -22,5 +38,5 @@ main:
     conference: ACM Transactions on Multimedia Computing, Communications and Applications <strong>(TOMM)</strong>, 2025.
     pdf: https://dl.acm.org/doi/10.1145/3712064
     code: https://github.com/TtuHamg/DriveDiTFit
-    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:YGYZmOLW7vkJ:scholar.google.com/&output=citation&scisdr=ClGnhA8DEJGQ80qRzAk:AFWwaeYAAAAAZ_-X1AlBWxDhFtFZ1IvhQpcBfHY&scisig=AFWwaeYAAAAAZ_-X1JCKtSxlKRuKkU9RZBOCxEc&scisf=4&ct=citation&cd=-1&hl=zh-CN
+    bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:YGYZmOLW7vkJ:scholar.google.com/&output=citation&scisdr=Cn1R-jkLELbR26Gt0SQ:AHkA5jQAAAAAaWmrySTEpZ5SFE77RXsGQyNPy08&scisig=AHkA5jQAAAAAaWmrydHXP1yeT6iuSxU2GfGNDBg&scisf=4&ct=citation&cd=-1&hl=zh-CN
     image: ./assets/img/DriveDiTFit.jpg
