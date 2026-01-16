@@ -9,9 +9,10 @@ main:
 
   - title: "FG-OrIU: Towards Better Forgetting via Feature-Gradient Orthogonality for Incremental Unlearning"
     authors: Qian Feng, <strong>Jiahang Tu</strong>, Mintong Kang, Hanbin Zhao*, Chao Zhang, Hui Qian
-    conference_short: AAAI
+    conference_short: ICCV
     conference: TProceedings of the IEEE/CVF International Conference on Computer Vision <strong>(ICCV)</strong>, 2025.
     pdf: https://openaccess.thecvf.com/content/ICCV2025/papers/Feng_FG-OrIU_Towards_Better_Forgetting_via_Feature-Gradient_Orthogonality_for_Incremental_Unlearning_ICCV_2025_paper.pdf
+    code: https://github.com/RAIAN08/FG-OrIU
     bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:8SQJwC8sgK8J:scholar.google.com/&output=citation&scisdr=Cn1R-jkLELbR26GqwKA:AHkA5jQAAAAAaWms2KA_LC3cCcxOL75n4m7_HB8&scisig=AHkA5jQAAAAAaWms2J0eM748uyuEuzjXyeDbJPA&scisf=4&ct=citation&cd=-1&hl=zh-CN
     image: ./assets/img/FG_OrIU.png
 
@@ -20,6 +21,7 @@ main:
     conference_short: Arxiv
     conference: <strong>ArXiv Preprint</strong>, 2025.
     pdf: https://arxiv.org/pdf/2501.15562
+    code: https://github.com/TtuHamg/CE-SDWV
     bibtex: https://scholar.googleusercontent.com/scholar.bib?q=info:T8Ki0NHoO3cJ:scholar.google.com/&output=citation&scisdr=Cn1R-jkLELbR26Gt9uM:AHkA5jQAAAAAaWmr7uNg5wYWyrdPFgrMGDgbcAA&scisig=AHkA5jQAAAAAaWmr7g6GmG04P-5ghDluhks3kr0&scisf=4&ct=citation&cd=-1&hl=zh-CN
     image: ./assets/img/CE_SDWV.png
 
