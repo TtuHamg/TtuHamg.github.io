@@ -2,7 +2,7 @@ main:
   - title: "UniTac: A Unified Multimodal Model for Cross-Sensor Tactile Understanding and Generation"
     authors: <strong>Jiahang Tu</strong>, Fengyu Yang, Chenyang Ma, Xihang Yu, Ziyao Zeng, Shaokai Wu, Hanbin Zhao, Zhi Tao, Chao Zhang, Hui Qian, Alex Wong
     conference_short: ECCV
-    conference: European Conference on Computer Vision <strong>(ECCV)</strong>, 2026.
+    conference: European Conference on Computer Vision <strong>(ECCV spotlight)</strong>, 2026.
     pdf: https://arxiv.org/abs/2606.31451
     image: ./assets/img/UniTac.png
 

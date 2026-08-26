@@ -8,11 +8,14 @@ I am Jiahang Tu, a second-year Ph.D. student (2024-) in the College of Computer 
 
 ## News
 - **[Jul. 2026]** Our paper about machine unlearning is accepted to IJCV 2026.
-- **[Jun. 2026]** Our paper about tactile UMM is accepted to ECCV 2026.
+- **[Jun. 2026]** Our paper about tactile UMM is accepted to ECCV 2026 spotlight.
 - **[Jan. 2026]** Our paper about machine unlearning is accepted to AAAI 2026.
 - **[Oct. 2025]** Our paper about incremental unlearning is accepted to ICCV 2025.
 - **[Mar. 2025]** Our paper about tactile generation is accepted to AAAI 2025.
 - **[Feb. 2025]** Our paper about AV generation is accepted to TOMM 2025.
+
+## Internship
+- **[Jun. 2026 - Present]** Research Intern with the **Kling AI** team at Kuaishou, working on embodied AI with a focus on world action models.
 
 {% include_relative _includes/publications.md %}
 
